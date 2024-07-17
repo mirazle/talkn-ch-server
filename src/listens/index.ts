@@ -1,11 +1,10 @@
-import * as Redis from 'ioredis';
 import https from 'https';
 
 import { Setting, init as settingInit } from '@common/models/Setting';
 import { ChConfig } from '@common/models/ChConfig';
+import { Connection } from '@common/models/Ch';
 import getHttpsServer from './https';
 import TalknRedis from './redis';
-import { Connection } from '@common/models/Ch';
 
 export type ListensReturn = {
   setting: Setting;

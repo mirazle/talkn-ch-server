@@ -9,7 +9,6 @@ import { tuneOptionRank, tuneOptionRankAll } from '@common/models/TuneOption';
 import { RangeWithScore } from '@common/models/Rank';
 
 const { serverOption, redis } = conf;
-const { limit } = redis;
 
 export type RedisMessageMethod = typeof tuneOptionRank | typeof tuneOptionRankAll;
 
@@ -33,7 +32,7 @@ export type RedisClients = {
 
 export class TalknRedis {
   private config: RedisConfig;
-  private cluster: Redis.Cluster;
+  // private cluster: Redis.Cluster;
   private clients: RedisClients;
   private get pubClient() {
     return this.clients.pubRedis;
@@ -54,9 +53,9 @@ export class TalknRedis {
   }
   constructor(chConfig: ChConfig) {
     this.config = chConfig.redis;
-    this.cluster = new Redis.Cluster(this.config.cluster);
+    //  = new Redis.Cluster(this.config.cluster);
 
-    const { host, port } = this.config.client;
+    const { host, port } = redis;
     const pubRedis: RedisClientType = createClient({ url: `redis://${host}:${port}` });
     const subRedis: RedisClientType = pubRedis.duplicate();
     const liveCntRedis: RedisClientType = pubRedis.duplicate();
@@ -66,31 +65,39 @@ export class TalknRedis {
     const { client } = this.config;
     // cluster
     const promiseCluster = new Promise((resolve, reject) => {
-      this.cluster.on('connect', resolve);
+      // this.cluster.on('connect', resolve);
     });
 
     // pub sub & live
-    await startRedisServerProccess(client.port);
+    // await startRedisServerProccess(client.port);
     const promisePub = new Promise((resolve, reject) => {
-      this.clients.pubRedis.on('connect', resolve);
+      this.clients.pubRedis.on('connect', (d) => {
+        resolve(d);
+      });
       this.clients.pubRedis.connect();
     });
     const promiseSub = new Promise((resolve, reject) => {
-      this.clients.subRedis.on('connect', resolve);
+      this.clients.subRedis.on('connect', (d) => {
+        resolve(d);
+      });
       this.clients.subRedis.connect();
     });
     const promiseLiveCnt = new Promise((resolve, reject) => {
-      this.clients.liveCntRedis.on('connect', resolve);
+      this.clients.liveCntRedis.on('connect', (d) => {
+        resolve(d);
+      });
+
       this.clients.liveCntRedis.connect();
       deleteAllSortSets(this.clients.liveCntRedis, '*');
     });
 
-    await Promise.all([promiseCluster, promisePub, promiseSub, promiseLiveCnt]);
+    await Promise.all([/*promiseCluster, */ promisePub, promiseSub, promiseLiveCnt]);
 
     return this;
   }
 
   public async getScores(key: string): Promise<RangeWithScore[]> {
+    const { limit } = redis;
     return await this.liveCntClient.zRangeWithScores(key, 0, limit, { REV: true });
   }
 
@@ -152,7 +159,7 @@ export const getRedisCluster = async (chConfig: ChConfig): Promise<Redis.Cluster
 };
 
 export const getRedisClients = async (chConfig: ChConfig): Promise<RedisClients> => {
-  const { host, port } = chConfig.redis.client;
+  const { host, port } = redis;
 
   // pub sub
   await startRedisServerProccess(port);
@@ -181,16 +188,20 @@ export const getRedisClients = async (chConfig: ChConfig): Promise<RedisClients>
 export const startRedisServerProccess = (port: number) => {
   return new Promise((resolve, reject) => {
     const redisServer = spawn('redis-server', ['--port', `${port}`]);
+    console.log('@@@ startRedisServerProccess B', port);
     // redis-server ./redis.conf --port 6380 &
     redisServer.stdout.on('data', (data: string) => {
+      console.log('@@@ startRedisServerProccess BOOT');
       resolve(redisServer); // Redis サーバーが起動したら resolve
     });
 
     redisServer.stderr.on('data', (data: string) => {
+      console.log('@@@ startRedisServerProccess REJECT', data);
       reject(new Error(`Redis server failed to start: ${data}`)); // エラーが発生したら reject
     });
 
     redisServer.stderr.on('error', (error: string) => {
+      console.log('@@@ startRedisServerProccess ERROR', error);
       reject(new Error(`Redis server error: ${error}`)); // エラーが発生したら reject
     });
 

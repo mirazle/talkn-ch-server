@@ -13,6 +13,10 @@ const getHttpsServer = async (topConnection: Connection, myChConfig: ChConfig): 
     const httpsServer = https.createServer(ssl);
     httpsServer
       .listen(ioPort, () => {
+        console.info('@@@@@@@@@@@ TOP CONNECTION @@@@@@@@@@@');
+        console.info(topConnection, myChConfig.nginx.proxyWssServer, ioPort);
+        console.info('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+
         resolve(httpsServer);
       })
       .on('error', (err) => {

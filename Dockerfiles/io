@@ -11,14 +11,14 @@ RUN yum update -y && \
 yum install -y --allowerasing gcc make curl git tar xz unzip pcre pcre-devel openssl openssl-devel perl zlib zlib-devel certbot
 
 # OpenRestyのインストール
-RUN curl -L https://openresty.org/download/openresty-1.21.4.1.tar.gz -o openresty.tar.gz && \
-tar -zxvf openresty.tar.gz && \
-cd openresty-1.21.4.1 && \
-./configure --with-http_ssl_module && \
-make && \
-make install
-
-ENV PATH="/usr/local/openresty/nginx/sbin:/usr/local/openresty/bin:$PATH"
+# RUN curl -L https://openresty.org/download/openresty-1.21.4.1.tar.gz -o openresty.tar.gz && \
+# tar -zxvf openresty.tar.gz && \
+# cd openresty-1.21.4.1 && \
+# ./configure --with-http_ssl_module && \
+# make && \
+# make install
+#
+# ENV PATH="/usr/local/openresty/nginx/sbin:/usr/local/openresty/bin:$PATH"
 
 # echo 'export PATH=/usr/local/openresty/bin:$PATH' >> ~/.bash_profile
 # export PATH=$PATH:/usr/local/openresty/nginx/sbin
@@ -40,10 +40,11 @@ make && \
 make install
 
 # talkn-serverディレクトリの設定と依存関係のインストール
-WORKDIR /usr/src/app/talkn-server
-COPY ../talkn-server ./
+WORKDIR /usr/src/app/
+COPY ./ ./
 RUN npm install
-RUN tsc
+RUN node generate-redis-conf.js &
+RUN npm run dev
 
 # アプリケーションの実行
-CMD ["node", "dist/talkn-server/src/run.js"]
+# CMD ["ts-node", "dist/src/run.js"]

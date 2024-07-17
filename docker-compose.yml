@@ -1,24 +1,32 @@
 services:
-  socket-io:
-    build:
-      context: ..
-      dockerfile: talkn-server/Dockerfiles/socket-io
+  redis:
+    image: redis:6.2
     volumes:
-      - ~/:/usr/src/app
-    working_dir: /usr/src/app
-    command: node dist/app.js
+      - redis-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 1s
+      timeout: 3s
+      retries: 3
+
+  node:
+    image: node:22.2.0
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ~/talkn-certs:/etc/ssl/certs
+    command: sh -c "npm install && npm run dev"
     ports:
-      - 10080:10080
-      - 10443:10443
+      - '${CH_PORT:-10444}:${CH_PORT:-10444}'
     environment:
       - IS_DOCKER=true
+      - NODE_ENV=development
       - REDIS_HOST=redis
-    networks:
-      - ch-network
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./certs:/etc/letsencrypt
-    entrypoint: /bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $$!; done;'
-networks:
-  ch-network:
+      - REDIS_PORT=${CH_PORT:-6379}
+    depends_on:
+      redis:
+        condition: service_healthy
+
+volumes:
+  redis-data:

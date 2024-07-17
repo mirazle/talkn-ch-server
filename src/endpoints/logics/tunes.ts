@@ -79,7 +79,7 @@ export default async (isIncrement: boolean, talknIo: TalknIo, socket: Socket, ch
         liveCnt,
       });
     }
-    console.log('TUNED', topConnection, tuneConnection);
+    console.log(method, topConnection, tuneConnection, liveCnt);
   } else {
     console.warn('BAD CONNECTION', tuneConnection, 'SERVER TOP_CONNECTION', topConnection);
   }

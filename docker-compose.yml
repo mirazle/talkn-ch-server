@@ -29,4 +29,5 @@ services:
         condition: service_healthy
 
 volumes:
+  node-node_modules:
   redis-data:

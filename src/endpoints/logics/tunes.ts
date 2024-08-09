@@ -2,7 +2,6 @@ import { Socket } from 'socket.io';
 import ChModel from '@common/models/Ch';
 import ChConfigModel, { ChConfig } from '@common/models/ChConfig';
 import { tuneOptionRank, tuneOptionRankAll } from '@common/models/TuneOption';
-import logics from '@server/endpoints/logics';
 import TalknIo from '@server/listens/io';
 import { Types } from '@common/models';
 
@@ -15,7 +14,6 @@ export default async (isIncrement: boolean, talknIo: TalknIo, socket: Socket, ch
   const url = String(socket.request.url);
   const tuneId = String(query.tuneId);
   const tuneConnection = ChModel.getConnectionFromRequest(host, url);
-
   if (tuneConnection.startsWith(topConnection)) {
     // fix status
     const chConfigJson = talknIo.chConfigJson;

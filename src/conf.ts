@@ -45,10 +45,10 @@ import os from 'os';
 
 const homeDir = os.homedir();
 const isDocker = Boolean(process.env.IS_DOCKER);
-const localhostPemKey = `${homeDir}/talkn-certs/localhost.key`;
-const localhostPemCrt = `${homeDir}/talkn-certs/localhost.crt`;
-const productPemKey = `/etc/ssl/certs/localhost.key`;
-const productPemCrt = `/etc/ssl/certs/localhost.crt`;
+const localhostPemKey = `${homeDir}/talkn-ch-gateway/common/nginx/localhost/openssl.key`;
+const localhostPemCrt = `${homeDir}/talkn-ch-gateway/common/nginx/localhost/openssl.crt`;
+const productPemKey = `/etc/ssl/certs/openssl.key`;
+const productPemCrt = `/etc/ssl/certs/openssl.crt`;
 // const productPemKey = '/etc/letsencrypt/live/talkn.io/privkey.pem';
 // const productPemCrt = '/etc/letsencrypt/live/talkn.io/cert.pem';
 

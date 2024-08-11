@@ -8,13 +8,13 @@ const { io, ssl } = conf;
 
 const getHttpsServer = async (topConnection: Connection, myChConfig: ChConfig): Promise<https.Server> => {
   const isRootConnection = topConnection === ChModel.rootConnection;
-  const ioPort = isRootConnection ? Number(io.root.port) : Number(myChConfig?.nginx.proxyWssPort);
+  const ioPort = isRootConnection ? Number(io.root.port) : Number(myChConfig?.nginx.port);
   return new Promise((resolve, reject) => {
     const httpsServer = https.createServer(ssl);
     httpsServer
       .listen(ioPort, () => {
         console.info('@@@@@@@@@@@ TOP CONNECTION @@@@@@@@@@@');
-        console.info(topConnection, myChConfig.nginx.proxyWssServer, ioPort);
+        console.info(topConnection, myChConfig.nginx.host, ioPort);
         console.info('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
 
         resolve(httpsServer);

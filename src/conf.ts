@@ -59,6 +59,8 @@ const host = isDocker ? String(process.env.REDIS_HOST) : 'localhost';
 const redisPort = isDocker ? Number(process.env.REDIS_PORT) : 6379;
 
 console.log(isDocker);
+console.log(host);
+console.log(redisPort);
 console.log(sslKey);
 console.log(sslCrt);
 
@@ -76,7 +78,10 @@ const conf = {
     host,
     port: redisPort,
   },
-  ssl: { key: fs.readFileSync(sslKey), cert: fs.readFileSync(sslCrt) },
+  ssl: {
+    key: fs.readFileSync(sslKey),
+    cert: fs.readFileSync(sslCrt),
+  },
 };
 
 export default conf;

@@ -4,7 +4,6 @@ services:
     image: redis:6.2
     volumes:
       - redis-data:/data
-    # command: sh -c "redis-server redis/6379/redis-server.conf &"
     networks:
       - talkn-global
 
@@ -20,11 +19,32 @@ services:
       - ./common/nginx/openssl.crt:/etc/ssl/certs/openssl.crt
       - ./common/nginx/openssl.key:/etc/ssl/certs/openssl.key
     command: sh -c "npm install && npm run dev"
-    # ports:
-    #  - '${CH_PORT:-10444}:${CH_PORT:-10444}'
+
     environment:
       - IS_DOCKER=true
       - TOP_CONNECTION=/
+      - NODE_ENV=development
+      - REDIS_HOST=redis-root
+      - REDIS_PORT=${CH_PORT:-6379}
+    networks:
+      - talkn-global
+
+  io-aa.com:
+    container_name: talkn-ch-server-io-aa.com
+    image: node:22.2.0
+    depends_on:
+      - redis-root
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./common/nginx/aa.com/openssl.crt:/etc/ssl/certs/openssl.crt
+      - ./common/nginx/aa.com/openssl.key:/etc/ssl/certs/openssl.key
+    command: sh -c "npm install && npm run dev"
+
+    environment:
+      - IS_DOCKER=true
+      - TOP_CONNECTION=/aa.com/
       - NODE_ENV=development
       - REDIS_HOST=redis-root
       - REDIS_PORT=${CH_PORT:-6379}

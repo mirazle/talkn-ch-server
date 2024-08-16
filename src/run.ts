@@ -8,6 +8,7 @@ import TalknIo from '@server/listens/io';
 import listens from '@server/listens';
 import endpoints from './endpoints';
 
+console.log('TOP_CONNECTION', process.env.TOP_CONNECTION);
 const topConnection = process.env.TOP_CONNECTION ? Ch.getConnection(process.env.TOP_CONNECTION) : Ch.rootConnection;
 
 fs.readFile('./common/src/ch-config.json', 'utf8', async (err, json) => {

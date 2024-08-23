@@ -16,35 +16,13 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-      - ./common/nginx/openssl.crt:/etc/ssl/certs/openssl.crt
-      - ./common/nginx/openssl.key:/etc/ssl/certs/openssl.key
+      - ~/talkn-ch-gateway/common/ch-configs/openssl.crt:/etc/ssl/certs/openssl.crt
+      - ~/talkn-ch-gateway/common/ch-configs/openssl.key:/etc/ssl/certs/openssl.key
     command: sh -c "npm install && npm run dev"
 
     environment:
       - IS_DOCKER=true
       - TOP_CONNECTION=/
-      - NODE_ENV=development
-      - REDIS_HOST=redis-root
-      - REDIS_PORT=${CH_PORT:-6379}
-    networks:
-      - talkn-global
-
-  io-aa.com:
-    container_name: talkn-ch-server-io-aa.com
-    image: node:22.2.0
-    depends_on:
-      - redis-root
-    working_dir: /app
-    volumes:
-      - .:/app
-      - /app/node_modules
-      - ./common/nginx/aa.com/openssl.crt:/etc/ssl/certs/openssl.crt
-      - ./common/nginx/aa.com/openssl.key:/etc/ssl/certs/openssl.key
-    command: sh -c "npm install && npm run dev"
-
-    environment:
-      - IS_DOCKER=true
-      - TOP_CONNECTION=/aa.com/
       - NODE_ENV=development
       - REDIS_HOST=redis-root
       - REDIS_PORT=${CH_PORT:-6379}

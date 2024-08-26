@@ -44,7 +44,7 @@ services:
 
     environment:
       - IS_DOCKER=true
-      - TOP_CONNECTION=aa.com/
+      - TOP_CONNECTION=/aa.com/
       - NODE_ENV=development
       - REDIS_HOST=redis-root
       - REDIS_PORT=${CH_PORT:-6379}
@@ -66,7 +66,7 @@ services:
 
     environment:
       - IS_DOCKER=true
-      - TOP_CONNECTION=bb.com/
+      - TOP_CONNECTION=/bb.com/
       - NODE_ENV=development
       - REDIS_HOST=redis-root
       - REDIS_PORT=${CH_PORT:-6379}
@@ -88,7 +88,7 @@ services:
 
     environment:
       - IS_DOCKER=true
-      - TOP_CONNECTION=cc.com/
+      - TOP_CONNECTION=/cc.com/
       - NODE_ENV=development
       - REDIS_HOST=redis-root
       - REDIS_PORT=${CH_PORT:-6379}
@@ -110,7 +110,7 @@ services:
 
     environment:
       - IS_DOCKER=true
-      - TOP_CONNECTION=dd.com/
+      - TOP_CONNECTION=/dd.com/
       - NODE_ENV=development
       - REDIS_HOST=redis-root
       - REDIS_PORT=${CH_PORT:-6379}
